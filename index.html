@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Car Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #game-container {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/loaders/GLTFLoader.js"></script>
+    <script>
+        // Initialize Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('game-container').appendChild(renderer.domElement);
+
+        // Load the 3D car model
+        const loader = new THREE.GLTFLoader();
+        let car;
+
+        loader.load('toyota_supra_dekztrax_persephone_34.glb', (gltf) => {
+            car = gltf.scene;
+            car.scale.set(0.1, 0.1, 0.1);
+            scene.add(car);
+
+            // Position the car
+            car.position.set(0, 0, -5);
+        });
+
+        // Create a ground plane
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(100, 100),
+            new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide })
+        );
+        ground.rotation.x = Math.PI / 2;
+        scene.add(ground);
+
+        // Set camera position
+        camera.position.z = 5;
+
+        // Main game loop
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            if (car) {
+                // Rotate the car
+                car.rotation.y += 0.01;
+            }
+
+            renderer.render(scene, camera);
+        };
+
+        animate();
+    </script>
+</body>
+</html>
